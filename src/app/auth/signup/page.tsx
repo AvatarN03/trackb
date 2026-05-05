@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { showToast } from '@/components/common/Toast'
 import { LoadingState } from '@/components/common/LoadingStates'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function SignupPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -33,7 +35,7 @@ export default function SignupPage() {
       const data = await response.json()
 
       if (data.success) {
-        localStorage.setItem('auth-token', data.data.token)
+        login(data.data.token)
         showToast('Account created successfully!', 'success')
         router.push('/dashboard')
       } else {

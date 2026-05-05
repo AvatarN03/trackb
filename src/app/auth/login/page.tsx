@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { showToast } from '@/components/common/Toast'
 import { LoadingState } from '@/components/common/LoadingStates'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -26,7 +28,7 @@ export default function LoginPage() {
       const data = await response.json()
 
       if (data.success) {
-        localStorage.setItem('auth-token', data.data.token)
+        login(data.data.token)
         showToast('Login successful!', 'success')
         router.push('/dashboard')
       } else {
@@ -75,7 +77,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center mt-6 text-gray-600">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/auth/signup" className="text-primary font-semibold hover:underline">
             Sign up
           </Link>

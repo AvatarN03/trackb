@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { showToast } from '@/components/common/Toast'
 import { LoadingState, ErrorState } from '@/components/common/LoadingStates'
+import { useAuth } from '@/hooks/useAuth'
 
 interface College {
   id: string
@@ -24,15 +26,26 @@ interface ComparisonData {
 }
 
 export default function ComparePage() {
+  const searchParams = useSearchParams()
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [allColleges, setAllColleges] = useState<College[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [comparison, setComparison] = useState<ComparisonData[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [searching, setSearching] = useState(false)
+  const savedIds = searchParams.get('ids')?.split(',').map((id) => id.trim()).filter(Boolean) ?? []
 
   useEffect(() => {
     fetchAllColleges()
   }, [])
+
+  useEffect(() => {
+    if (savedIds.length >= 2 && !comparison && !searching && !loading) {
+      setSelected(savedIds.slice(0, 3))
+      void handleCompareIds(savedIds.slice(0, 3))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, searching, comparison, savedIds.join(',')])
 
   const fetchAllColleges = async () => {
     try {
@@ -62,18 +75,13 @@ export default function ComparePage() {
     setComparison(null)
   }
 
-  const handleCompare = async () => {
-    if (selected.length < 2) {
-      showToast('Select at least 2 colleges', 'error')
-      return
-    }
-
+  const handleCompareIds = async (collegeIds: string[]) => {
     setSearching(true)
     try {
       const response = await fetch('/api/compare', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ collegeIds: selected }),
+        body: JSON.stringify({ collegeIds }),
       })
 
       const data = await response.json()
@@ -90,7 +98,46 @@ export default function ComparePage() {
     }
   }
 
-  if (loading) return <LoadingState />
+  const handleCompare = async () => {
+    if (selected.length < 2) {
+      showToast('Select at least 2 colleges', 'error')
+      return
+    }
+
+    await handleCompareIds(selected)
+  }
+
+  const handleSaveComparison = async () => {
+    if (!comparison) {
+      showToast('Create a comparison first', 'info')
+      return
+    }
+
+    if (!isAuthenticated) {
+      showToast('Login to save comparisons', 'info')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ collegeIds: selected, save: true }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        showToast('Comparison saved!', 'success')
+      } else {
+        showToast(data.error || 'Failed to save comparison', 'error')
+      }
+    } catch (error) {
+      showToast('Failed to save comparison', 'error')
+    }
+  }
+
+  if (loading || authLoading) return <LoadingState />
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -207,14 +254,7 @@ export default function ComparePage() {
 
           <div className="mt-6 flex gap-4">
             <button
-              onClick={() => {
-                const token = localStorage.getItem('auth-token')
-                if (!token) {
-                  showToast('Login to save comparisons', 'info')
-                  return
-                }
-                showToast('Comparison saved!', 'success')
-              }}
+              onClick={handleSaveComparison}
               className="btn-primary"
             >
               Save Comparison

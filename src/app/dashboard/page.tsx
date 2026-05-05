@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { LoadingState, ErrorState } from '@/components/common/LoadingStates'
 import { showToast } from '@/components/common/Toast'
+import { useProtectedRoute } from '@/hooks/useAuth'
 
 interface College {
   id: string
@@ -16,18 +16,14 @@ interface College {
 }
 
 export default function DashboardPage() {
-  const router = useRouter()
+  const { isAuthenticated, loading: authLoading } = useProtectedRoute()
   const [savedColleges, setSavedColleges] = useState<College[]>([])
   const [comparisons, setComparisons] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const token = localStorage.getItem('auth-token')
-    if (!token) {
-      router.push('/auth/login')
-      return
-    }
+    if (!isAuthenticated) return
 
     const fetchData = async () => {
       try {
@@ -52,7 +48,7 @@ export default function DashboardPage() {
     }
 
     fetchData()
-  }, [router])
+  }, [isAuthenticated])
 
   const handleRemoveSaved = async (collegeId: string) => {
     try {
@@ -67,7 +63,7 @@ export default function DashboardPage() {
     }
   }
 
-  if (loading) return <LoadingState />
+  if (authLoading || loading) return <LoadingState />
   if (error) return <ErrorState message={error} />
 
   return (
@@ -125,9 +121,12 @@ export default function DashboardPage() {
                 <div key={comparison.id} className="border border-gray-200 rounded-lg p-4">
                   <p className="text-sm text-gray-600">Comparing {comparison.collegeIds.length} colleges</p>
                   <p className="text-xs text-gray-500">Created: {new Date(comparison.createdAt).toLocaleDateString()}</p>
-                  <button className="mt-2 px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200">
+                  <Link
+                    href={`/compare?ids=${encodeURIComponent(comparison.collegeIds.join(','))}`}
+                    className="mt-2 inline-flex px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
+                  >
                     View Comparison
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>

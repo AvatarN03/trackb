@@ -7,9 +7,25 @@ import { verifyAuth } from '@/lib/auth/jwt'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    const shouldSave = Boolean(body?.save)
 
     // Validate input
     const validated = compareSchema.parse(body)
+
+    let auth = null
+    if (shouldSave) {
+      auth = await verifyAuth()
+
+      if (!auth) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Unauthorized',
+          } as ApiResponse<null>,
+          { status: 401 }
+        )
+      }
+    }
 
     // Fetch colleges
     const colleges = await prisma.college.findMany({
@@ -49,10 +65,20 @@ export async function POST(request: NextRequest) {
       avgPackage: college.placements?.avgPackage || 0,
     }))
 
+    if (shouldSave && auth) {
+      await prisma.comparison.create({
+        data: {
+          userId: auth.userId,
+          collegeIds: validated.collegeIds,
+        },
+      })
+    }
+
     const response: ApiResponse<any> = {
       success: true,
       data: {
         comparison: comparisonData,
+        saved: shouldSave,
       },
     }
 

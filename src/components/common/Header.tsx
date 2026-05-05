@@ -1,21 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function Header() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    const token = localStorage.getItem('auth-token')
-    setIsLoggedIn(!!token)
-  }, [])
+  const { isAuthenticated, logout } = useAuth()
 
   const handleLogout = () => {
-    localStorage.removeItem('auth-token')
-    setIsLoggedIn(false)
+    logout()
     router.push('/')
   }
 
@@ -39,7 +33,7 @@ export default function Header() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Link href="/dashboard" className="text-gray-600 hover:text-primary">
                 Dashboard
