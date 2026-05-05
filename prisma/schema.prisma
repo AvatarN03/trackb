@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model College {
+  id              String   @id @default(cuid())
+  name            String   @unique
+  location        String
+  fees            Int      // Annual fees in INR
+  rating          Float    @default(3.5)
+  courses         String[] // Array of course names
+  placements      Json     // { avgPackage: number, placementPercentage: number, topRecruiters: string[] }
+  description     String   @db.Text
+  imageUrl        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  savedByUsers    SavedCollege[]
+  questions       Question[]
+
+  @@map("colleges")
+}
+
+model User {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  password        String   // Hashed password
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  savedColleges   SavedCollege[]
+  comparisons     Comparison[]
+  questions       Question[]
+  answers         Answer[]
+
+  @@map("users")
+}
+
+model SavedCollege {
+  id        String   @id @default(cuid())
+  userId    String
+  collegeId String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college   College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, collegeId])
+  @@map("saved_colleges")
+}
+
+model Comparison {
+  id          String   @id @default(cuid())
+  userId      String
+  collegeIds  String[] // Array of college IDs
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("comparisons")
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  userId      String
+  collegeId   String
+  title       String
+  body        String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  college     College  @relation(fields: [collegeId], references: [id], onDelete: Cascade)
+  answers     Answer[]
+
+  @@map("questions")
+}
+
+model Answer {
+  id          String   @id @default(cuid())
+  questionId  String
+  userId      String
+  body        String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("answers")
+}

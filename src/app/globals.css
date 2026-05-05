@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  @apply bg-slate-50 text-slate-900 antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(251, 191, 36, 0.12), transparent 28%),
+    radial-gradient(circle at right top, rgba(15, 23, 42, 0.08), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-full bg-slate-950 text-white font-semibold shadow-lg shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-full bg-white text-slate-900 font-semibold ring-1 ring-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50;
+  }
+
+  .card {
+    @apply bg-white/90 backdrop-blur rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500;
+  }
+}
