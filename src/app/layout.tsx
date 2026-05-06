@@ -7,6 +7,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'College Discovery Platform',
   description: 'Discover, compare, and choose the best college for your future',
+  icons:{
+    icon: '/logo.png',
+  }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

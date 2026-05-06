@@ -39,10 +39,12 @@ export function Navbar() {
               Predictor
             </Link>
             {loading ? (
-              <span className="h-9 w-24 rounded-full bg-slate-100" aria-hidden="true" />
+              <span className="h-9 w-24 rounded-full bg-slate-200 flex justify-center items-center" aria-hidden="true">
+                <span className='rounded-full border-2 animate-spin border-t-amber-400 border-amber-100 block w-4 h-4 '/>
+              </span>
             ) : isAuthenticated ? (
               <>
-                <Link href="/dashboard" className="transition hover:text-amber-600">
+                <Link href="/dashboard" className="transition border-amber-500 border-4 rounded-xl hover:text-amber-600 p-2">
                   Dashboard
                 </Link>
                 <button

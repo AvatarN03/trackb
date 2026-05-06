@@ -2,6 +2,8 @@
 
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import { Card } from '../ui/card'
+import { Button } from '../ui/Button'
 
 interface CollegeCardProps {
   id: string
@@ -27,38 +29,39 @@ export function CollegeCard({
   const router = useRouter()
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition overflow-hidden">
-      {imageUrl && (
-        <img src={imageUrl} alt={name} className="w-full h-48 object-cover" />
+    <Card className="overflow-hidden" variant="default">
+      {imageUrl ? (
+        <div className="w-full h-48 overflow-hidden">
+          <img src={imageUrl} alt={name} className="w-full h-full object-cover transform transition group-hover:scale-105" />
+        </div>
+      ) : (
+        <div className="w-full h-48 bg-[color:var(--color-muted)]"></div>
       )}
+
       <div className="p-4">
-        <h3 className="text-lg font-bold text-gray-800 mb-2">{name}</h3>
-        <div className="space-y-1 text-sm text-gray-600 mb-4">
+        <h3 className="text-lg font-medium text-[color:var(--color-foreground)] mb-2">{name}</h3>
+        <div className="space-y-1 text-sm text-[color:var(--md-on-surface-variant)] mb-4">
           <p>📍 {location}</p>
           <p>💰 ₹{fees?.toLocaleString()} / year</p>
           <p>⭐ {rating.toFixed(1)} / 5.0</p>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => router.push(`/college/${id}`)}
-            className="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-          >
+
+        <div className="flex gap-3">
+          <Button className="flex-1" onClick={() => router.push(`/college/${id}`)}>
             View Details
-          </button>
+          </Button>
           {onSave && (
-            <button
+            <Button
+              variant={isSaved ? 'tonal' : 'outlined'}
+              aria-pressed={isSaved}
               onClick={onSave}
-              className={`px-3 py-2 rounded transition ${
-                isSaved
-                  ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
+              className="w-12 h-10 p-0 flex items-center justify-center"
             >
               {isSaved ? '❤️' : '🤍'}
-            </button>
+            </Button>
           )}
         </div>
       </div>
-    </div>
+    </Card>
   )
 }

@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 * {
   margin: 0;
@@ -10,19 +13,49 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  @apply bg-slate-50 text-slate-900 antialiased;
-  background-image:
-    radial-gradient(circle at top left, rgba(251, 191, 36, 0.12), transparent 28%),
-    radial-gradient(circle at right top, rgba(15, 23, 42, 0.08), transparent 24%),
-    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+/* Design tokens (Material You - purple seed) */
+:root {
+  --md-background: #FFFBFE;
+  --md-on-background: #1C1B1F;
+  --md-surface-container: #F3EDF7;
+  --md-surface-container-low: #E7E0EC;
+  --md-primary: #6750A4;
+  --md-on-primary: #FFFFFF;
+  --md-secondary-container: #E8DEF8;
+  --md-on-secondary-container: #1D192B;
+  --md-tertiary: #7D5260;
+  --md-outline: #79747E;
+  --md-on-surface-variant: #49454F;
+
+  /* token aliases used by components and Tailwind */
+  --color-background: var(--md-background);
+  --color-foreground: var(--md-on-background);
+  --color-card: var(--md-surface-container);
+  --color-card-foreground: var(--md-on-background);
+  --color-primary: var(--md-primary);
+  --color-primary-foreground: var(--md-on-primary);
+  --color-secondary: var(--md-secondary-container);
+  --color-secondary-foreground: var(--md-on-secondary-container);
+  --color-muted: var(--md-surface-container-low);
+  --color-border: var(--md-outline);
+  --color-input: var(--md-outline);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
 }
 
-/* Tailwind directives */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+body {
+  font-family: Roboto, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial;
+  @apply bg-[color:var(--color-background)] text-[color:var(--color-foreground)] antialiased;
+  background-image:
+    radial-gradient(circle at 10% -10%, color-mix(in oklch, var(--color-primary) 22%, transparent), transparent 36%),
+    radial-gradient(circle at 95% 5%, color-mix(in oklch, var(--md-tertiary) 16%, transparent), transparent 34%),
+    linear-gradient(180deg, color-mix(in oklch, var(--md-background) 100%, transparent), color-mix(in oklch, var(--md-surface-container) 55%, transparent));
+}
+
 
 /* Custom utilities */
 @layer components {

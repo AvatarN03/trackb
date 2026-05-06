@@ -9,9 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#3b82f6',
-        secondary: '#10b981',
-        accent: '#f59e0b',
+        // Map Tailwind color keys to the design token CSS variables
+        primary: 'var(--color-primary)',
+        'primary-foreground': 'var(--color-primary-foreground)',
+        secondary: 'var(--color-secondary)',
+        'secondary-foreground': 'var(--color-secondary-foreground)',
+        accent: 'var(--color-accent)',
+        background: 'var(--color-background)',
+        foreground: 'var(--color-foreground)',
+        card: 'var(--color-card)',
+        muted: 'var(--color-muted)',
+        border: 'var(--color-border)',
       },
     },
   },
