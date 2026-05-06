@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { predictSchema } from '@/types/validation'
 import { ApiResponse } from '@/types'
 import prisma from '@/lib/db/prisma'
+import { College } from '@prisma/client'
 
 // Prediction rules based on exam and rank
 function getPredictedColleges(exam: string, rank: number): string[] {
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
     const predictedCollegeNames = getPredictedColleges(validated.exam, validated.rank)
 
     // Fetch colleges by name
-    const colleges = await prisma.college.findMany({
+    const colleges: College[] = await prisma.college.findMany({
       where: {
         name: { in: predictedCollegeNames },
       },
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     const probability = calculateProbability(validated.rank, validated.exam)
 
-    const results = colleges.map((college) => ({
+    const results = colleges.map((college: College) => ({
       collegeId: college.id,
       name: college.name,
       location: college.location,
