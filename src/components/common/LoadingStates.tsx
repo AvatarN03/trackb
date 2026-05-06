@@ -48,7 +48,7 @@ export function Toast({ type, message, onClose }: ToastProps) {
 
 export function LoadingState() {
   return (
-    <div className="flex flex-col items-center justify-center py-12">
+    <div className="flex flex-col items-center justify-center py-12 h-96 w-full">
       <Spinner />
       <p className="mt-4 text-gray-600">Loading...</p>
     </div>
