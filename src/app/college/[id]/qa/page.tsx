@@ -140,102 +140,120 @@ export default function CollegeQAPage() {
   if (error) return <ErrorState message={error} />
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-gray-900 mb-8">Q&A Discussion</h1>
+    <div className="min-h-screen gradient-bg">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="section-title mb-2">💬 Q&A Discussion</h1>
+          <p className="section-subtitle">Ask questions and share insights with other students</p>
+        </div>
 
-      {/* Ask Question Form */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-2xl font-bold mb-4">Ask a Question</h2>
-        <form onSubmit={handleAskQuestion} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Question Title</label>
-            <input
-              type="text"
-              value={newQuestionTitle}
-              onChange={(e) => setNewQuestionTitle(e.target.value)}
-              placeholder="What's your question?"
-              className="input-field"
-              required
-            />
+        {/* Ask Question Form */}
+        <div className="card-elevated p-8 mb-12">
+          <h2 className="text-2xl font-bold text-slate-950 mb-6">❓ Ask a Question</h2>
+          <form onSubmit={handleAskQuestion} className="space-y-6">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-3">Question Title</label>
+              <input
+                type="text"
+                value={newQuestionTitle}
+                onChange={(e) => setNewQuestionTitle(e.target.value)}
+                placeholder="What would you like to know?"
+                className="input-field-lg"
+                required
+              />
+              <p className="text-xs text-slate-500 mt-2">Be specific and clear (at least 5 characters)</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-3">Details</label>
+              <textarea
+                value={newQuestion}
+                onChange={(e) => setNewQuestion(e.target.value)}
+                placeholder="Provide more context and details about your question..."
+                rows={5}
+                className="w-full px-5 py-3.5 rounded-2xl border border-slate-200 bg-white/95 backdrop-blur transition duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:shadow-lg focus:shadow-amber-500/10"
+                required
+              />
+              <p className="text-xs text-slate-500 mt-2">Minimum 10 characters</p>
+            </div>
+
+            <button type="submit" className="btn-primary w-full md:w-auto">
+              ✨ Post Question
+            </button>
+          </form>
+        </div>
+
+        {/* Questions List */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-950">📝 Questions</h2>
+              <p className="text-slate-600 mt-1"><span className="badge-primary">{questions.length}</span></p>
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Details</label>
-            <textarea
-              value={newQuestion}
-              onChange={(e) => setNewQuestion(e.target.value)}
-              placeholder="Provide more details..."
-              rows={4}
-              className="input-field"
-              required
-            ></textarea>
-          </div>
-
-          <button type="submit" className="btn-primary">
-            Post Question
-          </button>
-        </form>
-      </div>
-
-      {/* Questions List */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900">Questions ({questions.length})</h2>
-
-        {questions.length === 0 ? (
-          <div className="bg-gray-50 rounded-lg p-12 text-center">
-            <div className="text-6xl mb-4">💬</div>
-            <p className="text-gray-600 text-lg">No questions yet. Be the first to ask!</p>
-          </div>
-        ) : (
-          questions.map((question) => (
-            <div key={question.id} className="bg-white rounded-lg shadow-md p-6">
-              {/* Question */}
-              <div className="mb-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{question.title}</h3>
-                <p className="text-gray-700 mb-3">{question.body}</p>
-                <div className="text-sm text-gray-500">
-                  Asked by <span className="font-semibold">{question.user.email}</span> •{' '}
-                  {new Date(question.createdAt).toLocaleDateString()}
-                </div>
-              </div>
-
-              {/* Answers */}
-              {question.answers.length > 0 && (
-                <div className="mb-6 bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500">
-                  <h4 className="font-bold text-gray-900 mb-4">Answers ({question.answers.length})</h4>
-                  <div className="space-y-4">
-                    {question.answers.map((answer) => (
-                      <div key={answer.id} className="bg-white p-3 rounded">
-                        <p className="text-gray-700 mb-2">{answer.body}</p>
-                        <div className="text-xs text-gray-500">
-                          By <span className="font-semibold">{answer.user.email}</span> •{' '}
-                          {new Date(answer.createdAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    ))}
+          {questions.length === 0 ? (
+            <div className="card-elevated p-16 text-center">
+              <div className="text-6xl mb-4">💬</div>
+              <p className="text-slate-600 text-lg">No questions yet. Be the first to ask!</p>
+            </div>
+          ) : (
+            questions.map((question) => (
+              <div key={question.id} className="card-elevated p-8 hover:border-amber-300">
+                {/* Question */}
+                <div className="mb-8">
+                  <h3 className="text-xl font-bold text-slate-950 mb-3">{question.title}</h3>
+                  <p className="text-slate-700 text-base leading-relaxed mb-4">{question.body}</p>
+                  <div className="flex items-center justify-between text-sm text-slate-500">
+                    <span>
+                      👤 <span className="font-semibold text-slate-700">{question.user.email}</span>
+                    </span>
+                    <span>📅 {new Date(question.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
-              )}
 
-              {/* Answer Form */}
-              <div className="border-t pt-4">
-                <textarea
-                  value={newAnswers[question.id] || ''}
-                  onChange={(e) => setNewAnswers({ ...newAnswers, [question.id]: e.target.value })}
-                  placeholder="Write your answer..."
-                  rows={3}
-                  className="input-field mb-2"
-                ></textarea>
-                <button
-                  onClick={() => handlePostAnswer(question.id)}
-                  className="btn-primary"
-                >
-                  Post Answer
-                </button>
+                {/* Answers */}
+                {question.answers.length > 0 && (
+                  <div className="mb-8 p-6 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-50/50 border-2 border-blue-200">
+                    <h4 className="font-bold text-slate-950 mb-4 flex items-center gap-2">
+                      ✅ Answers <span className="badge-primary">{question.answers.length}</span>
+                    </h4>
+                    <div className="space-y-4">
+                      {question.answers.map((answer) => (
+                        <div key={answer.id} className="bg-white p-4 rounded-xl border border-blue-100">
+                          <p className="text-slate-700 mb-3 text-sm">{answer.body}</p>
+                          <div className="flex items-center justify-between text-xs text-slate-500">
+                            <span>👤 {answer.user.email}</span>
+                            <span>📅 {new Date(answer.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Answer Form */}
+                <div className="border-t-2 border-slate-200 pt-6">
+                  <h4 className="font-bold text-slate-950 mb-4">💭 Your Answer</h4>
+                  <textarea
+                    value={newAnswers[question.id] || ''}
+                    onChange={(e) => setNewAnswers({ ...newAnswers, [question.id]: e.target.value })}
+                    placeholder="Write your answer here... (minimum 5 characters)"
+                    rows={3}
+                    className="w-full px-5 py-3.5 rounded-2xl border border-slate-200 bg-white/95 backdrop-blur transition duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:shadow-lg focus:shadow-amber-500/10 mb-3"
+                  />
+                  <button
+                    onClick={() => handlePostAnswer(question.id)}
+                    className="btn-primary"
+                  >
+                    📤 Post Answer
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
   )

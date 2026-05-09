@@ -67,95 +67,97 @@ export default function DashboardPage() {
   if (error) return <ErrorState message={error} />
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">My Dashboard</h1>
-        <Link href="/colleges" className="btn-primary">
-          Explore Colleges
-        </Link>
-      </div>
+    <div className="min-h-screen gradient-bg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
+          <div>
+            <h1 className="section-title mb-2">📚 My Dashboard</h1>
+            <p className="section-subtitle">Manage your saved colleges and comparisons</p>
+          </div>
+          <Link href="/colleges" className="btn-primary">
+            ✨ Explore More Colleges
+          </Link>
+        </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-64">
-        {/* Saved Colleges */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">Saved Colleges ({savedColleges.length})</h2>
-          {savedColleges.length === 0 ? (
-            <p className="text-gray-600">No saved colleges yet</p>
-          ) : (
-            <div className="space-y-4">
-              {savedColleges.map((college) => (
-                <div key={college.id} className="border border-gray-200 rounded-lg p-4 flex justify-between items-start">
-                  <div>
-                    <h3 className="font-bold text-lg">{college.name}</h3>
-                    <p className="text-gray-600">📍 {college.location}</p>
-                    <p className="text-gray-600">⭐ {college.rating} | ₹{(college.fees / 100000).toFixed(2)}L</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-96">
+          {/* Saved Colleges */}
+          <div className="card-elevated p-8">
+            <h2 className="text-2xl font-bold text-slate-950 mb-6">⭐ Saved Colleges ({savedColleges.length})</h2>
+            {savedColleges.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-5xl mb-4">📭</div>
+                <p className="text-slate-600 text-lg">No saved colleges yet</p>
+                <Link href="/colleges" className="btn-tertiary inline-block mt-4">
+                  Start Exploring
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {savedColleges.map((college) => (
+                  <div key={college.id} className="card p-5 hover:border-amber-300">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-lg text-slate-950 mb-2">{college.name}</h3>
+                        <div className="flex flex-wrap gap-3 text-sm text-slate-600">
+                          <span>📍 {college.location}</span>
+                          <span>⭐ {college.rating.toFixed(1)}</span>
+                          <span>💰 ₹{(college.fees / 100000).toFixed(2)}L</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Link
+                          href={`/college/${college.id}`}
+                          className="btn-tertiary text-sm"
+                        >
+                          View
+                        </Link>
+                        <button
+                          onClick={() => handleRemoveSaved(college.id)}
+                          className="px-3 py-2 rounded-lg bg-red-50 text-red-600 font-medium ring-1 ring-red-200 hover:bg-red-100 hover:ring-red-300 transition text-sm"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/college/${college.id}`}
-                      className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
-                    >
-                      View
-                    </Link>
-                    <button
-                      onClick={() => handleRemoveSaved(college.id)}
-                      className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200"
-                    >
-                      Remove
-                    </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Comparisons */}
+          <div className="card-elevated p-8">
+            <h2 className="text-2xl font-bold text-slate-950 mb-6">⚖️ Recent Comparisons ({comparisons.length})</h2>
+            {comparisons.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-5xl mb-4">📊</div>
+                <p className="text-slate-600 text-lg">No comparisons yet</p>
+                <Link href="/compare" className="btn-tertiary inline-block mt-4">
+                  Start Comparing
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {comparisons.map((comparison, idx) => (
+                  <div key={idx} className="card p-5 hover:border-amber-300">
+                    <div className="flex justify-between items-start gap-4">
+                      <div className="flex-1">
+                        <h3 className="font-bold text-slate-950 mb-2">Comparison {idx + 1}</h3>
+                        <p className="text-sm text-slate-600">{comparison.collegeIds.length} colleges compared</p>
+                        <p className="text-xs text-slate-500 mt-1">{new Date(comparison.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      <Link
+                        href="/compare"
+                        className="btn-tertiary text-sm"
+                      >
+                        View
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Saved Comparisons */}
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold mb-4">Saved Comparisons ({comparisons.length})</h2>
-          {comparisons.length === 0 ? (
-            <p className="text-gray-600">No saved comparisons yet</p>
-          ) : (
-            <div className="space-y-4">
-              {comparisons.map((comparison) => (
-                <div key={comparison.id} className="border border-gray-200 rounded-lg p-4">
-                  <p className="text-sm text-gray-600">Comparing {comparison.collegeIds.length} colleges</p>
-                  <p className="text-xs text-gray-500">Created: {new Date(comparison.createdAt).toLocaleDateString()}</p>
-                  <Link
-                    href={`/compare?ids=${encodeURIComponent(comparison.collegeIds.join(','))}`}
-                    className="mt-2 inline-flex px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200"
-                  >
-                    View Comparison
-                  </Link>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <div className="bg-blue-50 rounded-lg p-6 text-center">
-          <div className="text-4xl mb-3">🔍</div>
-          <h3 className="font-bold mb-2">Explore Colleges</h3>
-          <Link href="/colleges" className="text-primary hover:underline">
-            Browse colleges →
-          </Link>
-        </div>
-        <div className="bg-green-50 rounded-lg p-6 text-center">
-          <div className="text-4xl mb-3">⚖️</div>
-          <h3 className="font-bold mb-2">Compare Colleges</h3>
-          <Link href="/compare" className="text-primary hover:underline">
-            Create comparison →
-          </Link>
-        </div>
-        <div className="bg-purple-50 rounded-lg p-6 text-center">
-          <div className="text-4xl mb-3">🎯</div>
-          <h3 className="font-bold mb-2">Try Predictor</h3>
-          <Link href="/predictor" className="text-primary hover:underline">
-            Predict colleges →
-          </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

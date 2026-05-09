@@ -60,18 +60,62 @@ body {
 /* Custom utilities */
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-full bg-slate-950 text-white font-semibold shadow-lg shadow-slate-950/15 transition hover:-translate-y-0.5 hover:bg-slate-800;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full bg-gradient-to-r from-slate-950 to-slate-800 text-white font-semibold shadow-lg shadow-slate-950/20 transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-950/30 active:scale-95;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-full bg-white text-slate-900 font-semibold ring-1 ring-slate-200 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50;
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-slate-900 font-semibold ring-2 ring-slate-200 shadow-md transition duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:ring-slate-300 hover:shadow-lg active:scale-95;
+  }
+
+  .btn-tertiary {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg bg-amber-50 text-amber-700 font-medium ring-1 ring-amber-200 transition duration-300 hover:bg-amber-100 hover:ring-amber-300 active:scale-95;
   }
 
   .card {
-    @apply bg-white/90 backdrop-blur rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg transition;
+    @apply bg-white/95 backdrop-blur rounded-2xl border border-slate-200/80 shadow-lg hover:shadow-2xl hover:border-slate-300 transition duration-300 hover:-translate-y-1;
+  }
+
+  .card-elevated {
+    @apply bg-gradient-to-br from-white to-slate-50/50 backdrop-blur rounded-2xl border border-slate-200 shadow-xl hover:shadow-2xl transition duration-300;
   }
 
   .input-field {
-    @apply w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500;
+    @apply w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/95 backdrop-blur transition duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:shadow-lg focus:shadow-amber-500/10;
+  }
+
+  .input-field-lg {
+    @apply w-full px-5 py-3.5 rounded-2xl border border-slate-200 bg-white/95 text-lg backdrop-blur transition duration-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:shadow-lg focus:shadow-amber-500/10;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .badge-primary {
+    @apply badge bg-amber-100 text-amber-700;
+  }
+
+  .badge-success {
+    @apply badge bg-green-100 text-green-700;
+  }
+
+  .badge-warning {
+    @apply badge bg-yellow-100 text-yellow-700;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-100 text-red-700;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold text-slate-950 tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-slate-600 leading-relaxed;
+  }
+
+  .gradient-bg {
+    @apply bg-gradient-to-br from-slate-50 via-white to-slate-100;
   }
 }
