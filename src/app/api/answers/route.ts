@@ -82,8 +82,13 @@ export async function POST(request: NextRequest) {
     console.error('Create answer error:', error)
     
     // Handle Zod validation errors
-    if (error.name === 'ZodError') {
-      const validationErrors = error.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(', ')
+    if (error.name === 'ZodError' && Array.isArray(error.errors)) {
+      const validationErrors = error.errors
+        .map((err: any) => {
+          const path = Array.isArray(err.path) ? err.path.join('.') : 'field'
+          return `${path}: ${err.message}`
+        })
+        .join(', ')
       return NextResponse.json(
         {
           success: false,

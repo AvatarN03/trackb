@@ -39,12 +39,15 @@ export default function CollegeQAPage() {
       const data = await response.json()
 
       if (data.success) {
-        setQuestions(data.data)
+        setQuestions(data.data || [])
+        setError(null)
       } else {
-        setError(data.error)
+        setError(data.error || 'Failed to fetch questions')
+        setQuestions([])
       }
     } catch (err) {
       setError('Failed to fetch questions')
+      setQuestions([])
     } finally {
       setLoading(false)
     }
@@ -76,7 +79,12 @@ export default function CollegeQAPage() {
       const data = await response.json()
 
       if (data.success) {
-        setQuestions([data.data, ...questions])
+        // Add answers array to new question if it doesn't exist
+        const newQuestion = {
+          ...data.data,
+          answers: data.data.answers || [],
+        }
+        setQuestions([newQuestion, ...questions])
         setNewQuestion('')
         setNewQuestionTitle('')
         showToast('Question posted successfully!', 'success')
