@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyAuth()
+    const auth = await verifyAuth(request)
 
     if (!auth) {
       return NextResponse.json(
@@ -66,6 +66,17 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const { title, body: questionBody, collegeId } = body
+
+    // Validate inputs are provided
+    if (!title || !questionBody || !collegeId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: !title ? 'Title is required' : !questionBody ? 'Description is required' : 'College ID is required',
+        } as ApiResponse<null>,
+        { status: 400 }
+      )
+    }
 
     // Validate
     const validated = questionSchema.parse({ title, body: questionBody })
@@ -116,6 +127,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 201 })
   } catch (error: any) {
     console.error('Create question error:', error)
+    
+    // Handle Zod validation errors
+    if (error.name === 'ZodError') {
+      const validationErrors = error.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(', ')
+      return NextResponse.json(
+        {
+          success: false,
+          error: validationErrors,
+        } as ApiResponse<null>,
+        { status: 400 }
+      )
+    }
+
     return NextResponse.json(
       {
         success: false,

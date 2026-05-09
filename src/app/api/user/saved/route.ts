@@ -5,7 +5,7 @@ import { ApiResponse } from '@/types'
 
 export async function GET(request: NextRequest) {
   try {
-    const auth = await verifyAuth()
+    const auth = await verifyAuth(request)
 
     if (!auth) {
       return NextResponse.json(

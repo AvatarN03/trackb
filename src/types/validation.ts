@@ -29,12 +29,12 @@ export const predictSchema = z.object({
 })
 
 export const questionSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters'),
-  body: z.string().min(10, 'Description must be at least 10 characters'),
+  title: z.string({ required_error: 'Title is required' }).min(5, 'Title must be at least 5 characters'),
+  body: z.string({ required_error: 'Description is required' }).min(10, 'Description must be at least 10 characters'),
 })
 
 export const answerSchema = z.object({
-  body: z.string().min(5, 'Answer must be at least 5 characters'),
+  body: z.string({ required_error: 'Answer is required' }).min(5, 'Answer must be at least 5 characters'),
 })
 
 // Type exports

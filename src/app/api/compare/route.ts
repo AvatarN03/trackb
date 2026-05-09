@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     let auth = null
     if (shouldSave) {
-      auth = await verifyAuth()
+      auth = await verifyAuth(request)
 
       if (!auth) {
         return NextResponse.json(
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const auth = await verifyAuth()
+    const auth = await verifyAuth(request)
 
     if (!auth) {
       return NextResponse.json(

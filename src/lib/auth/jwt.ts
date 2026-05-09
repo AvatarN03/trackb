@@ -1,6 +1,7 @@
 import { jwtVerify, SignJWT } from 'jose'
 import type { JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
+import { NextRequest } from 'next/server'
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'default-secret-change-in-production')
 
@@ -36,11 +37,32 @@ export async function verifyToken(token: string): Promise<AuthPayload | null> {
 
 export async function getAuthToken() {
   const cookieStore = cookies()
-  return cookieStore.get('auth-token')?.value
+  return cookieStore.get('auth-token')?.value ?? null
 }
 
-export async function verifyAuth(): Promise<AuthPayload | null> {
-  const token = await getAuthToken()
+export async function getAuthTokenFromRequest(request: NextRequest): Promise<string | null> {
+  // Try to get from Authorization header first
+  const authHeader = request.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    return authHeader.slice(7)
+  }
+
+  // Fall back to cookie
+  const cookieValue = request.cookies.get('auth-token')?.value
+  return cookieValue ?? null
+}
+
+export async function verifyAuth(request?: NextRequest): Promise<AuthPayload | null> {
+  let token: string | null = null
+
+  if (request) {
+    // If request is provided, check both Authorization header and cookies
+    token = await getAuthTokenFromRequest(request)
+  } else {
+    // Server-side only: get from cookies
+    token = await getAuthToken()
+  }
+
   if (!token) return null
 
   return await verifyToken(token)

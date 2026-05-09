@@ -6,7 +6,7 @@ import { ApiResponse } from '@/types'
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await verifyAuth()
+    const auth = await verifyAuth(request)
 
     if (!auth) {
       return NextResponse.json(
@@ -20,6 +20,17 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const { questionId, body: answerBody } = body
+
+    // Validate inputs are provided
+    if (!answerBody || !questionId) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: !answerBody ? 'Answer is required' : 'Question ID is required',
+        } as ApiResponse<null>,
+        { status: 400 }
+      )
+    }
 
     // Validate
     const validated = answerSchema.parse({ body: answerBody })
@@ -69,6 +80,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(response, { status: 201 })
   } catch (error: any) {
     console.error('Create answer error:', error)
+    
+    // Handle Zod validation errors
+    if (error.name === 'ZodError') {
+      const validationErrors = error.errors.map((err: any) => `${err.path.join('.')}: ${err.message}`).join(', ')
+      return NextResponse.json(
+        {
+          success: false,
+          error: validationErrors,
+        } as ApiResponse<null>,
+        { status: 400 }
+      )
+    }
+
     return NextResponse.json(
       {
         success: false,

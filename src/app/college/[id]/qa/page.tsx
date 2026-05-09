@@ -62,7 +62,10 @@ export default function CollegeQAPage() {
     try {
       const response = await fetch('/api/questions', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({
           title: newQuestionTitle,
           body: newQuestion,
@@ -101,7 +104,10 @@ export default function CollegeQAPage() {
     try {
       const response = await fetch('/api/answers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
         body: JSON.stringify({
           questionId,
           body: answerText,
