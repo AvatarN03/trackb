@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <ToastContainer />
-          <footer className="border-t border-slate-200 bg-white/85 py-8 text-center text-slate-600 backdrop-blur">
+          <footer className="border-t border-slate-200 bg-white/85 py-4 text-center text-slate-600 backdrop-blur">
             <p>&copy; 2026 College Discovery Platform. All rights reserved.</p>
           </footer>
         </AuthProvider>

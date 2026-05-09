@@ -1,7 +1,8 @@
-'use client'
+"use client"
+
+export const dynamic = 'force-dynamic'
 
 import React, { useState, useEffect } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { showToast } from '@/components/common/Toast'
 import { LoadingState, ErrorState } from '@/components/common/LoadingStates'
 import { useAuth } from '@/hooks/useAuth'
@@ -26,14 +27,13 @@ interface ComparisonData {
 }
 
 export default function ComparePage() {
-  const searchParams = useSearchParams()
   const { isAuthenticated, loading: authLoading } = useAuth()
   const [allColleges, setAllColleges] = useState<College[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [comparison, setComparison] = useState<ComparisonData[] | null>(null)
   const [loading, setLoading] = useState(true)
   const [searching, setSearching] = useState(false)
-  const savedIds = searchParams.get('ids')?.split(',').map((id) => id.trim()).filter(Boolean) ?? []
+  const [savedIds, setSavedIds] = useState<string[]>([])
 
   useEffect(() => {
     fetchAllColleges()
@@ -46,6 +46,17 @@ export default function ComparePage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, searching, comparison, savedIds.join(',')])
+
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search)
+      const ids = params.get('ids')?.split(',').map((id) => id.trim()).filter(Boolean) ?? []
+      setSavedIds(ids)
+    } catch (e) {
+      setSavedIds([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const fetchAllColleges = async () => {
     try {
